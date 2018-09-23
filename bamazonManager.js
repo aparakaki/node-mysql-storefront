@@ -96,7 +96,44 @@ function addInventory() {
 }
 
 function addProduct() {
-    connection.query
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "item",
+            message: "Enter name of the product you would like to add"
+        },
+        {
+            type: "input",
+            name: "dept",
+            message: "Enter product's departement"
+        },
+        {
+            type: "input",
+            name: "price",
+            message: "Enter product's price"
+        },
+        {
+            type: "input",
+            name: "qty",
+            message: "Enter product's quantity"
+        }
+    ]).then(function(answer) {
+        connection.query("INSERT INTO products SET ?", 
+        {
+            product_name: answer.item, 
+            department_name: answer.dept, 
+            price: answer.price,
+            stock_quantity: answer.qty
+        }, function(error) {
+            if(!error) {
+                console.log("\r\nProduct entered: " + answer.item +
+                            "\r\nProduct dept: " + answer.dept +
+                            "\r\nProduct price: " + answer.price +
+                            "\r\nProduct qty: " + answer.qty + "\r\n")
+            }
+            returnPrompt();
+        })
+    })
 }
 
 function returnPrompt() {
