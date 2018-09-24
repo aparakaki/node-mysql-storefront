@@ -1,6 +1,7 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 // var chalk = require("chalk");
+var table = require("easy-table");
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -37,12 +38,14 @@ function mainMenu() {
 }
 
 function salesByDepartment() {
-    let query = "SELECT departments.department_id, departments.department_name, SUM(products.product_sales) AS product_sales,                           departments.over_head_costs, (departments.over_head_costs - SUM(products.product_sales)) AS total_profit ";
+    let query = "SELECT departments.department_id, departments.department_name, SUM(products.product_sales) AS product_sales,";
+        query += "departments.over_head_costs, (departments.over_head_costs - SUM(products.product_sales)) AS total_profit ";
         query += "FROM departments INNER JOIN products ON departments.department_name = products.department_name "; 
         query += "GROUP BY departments.department_name;";
 
     connection.query(query, function(error, data) {
-        console.log(data);
+       displayTable(data);
+        
         connection.end();
     })
 };
@@ -75,4 +78,19 @@ function newDepartment() {
             }
         })  
     })
+};
+
+function displayTable(dataInfo) {
+    var t = new table
+ 
+    dataInfo.forEach(function(product) {
+    t.cell('department_id', product.department_id)
+    t.cell('department_name', product.department_name)
+    t.cell('over_head_costs', product.over_head_costs)
+    t.cell('products_sales', product.product_sales)
+    t.cell('total_profit', product.total_profit)
+    t.newRow()
+    })
+    
+    console.log(t.toString())
 }

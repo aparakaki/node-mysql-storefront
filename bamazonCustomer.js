@@ -1,6 +1,7 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 // var chalk = require("chalk");
+var table = require("easy-table");
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -19,7 +20,7 @@ function displayItems() {
     connection.query("SELECT * FROM products", function(error, data) {
         let itemInfo = [];
         for (let i = 0; i < data.length; i++) {
-            console.log(data[i].item_id + " " + data[i].product_name + " $" + data[i].price);
+            // console.log(data[i].item_id + " " + data[i].product_name + " $" + data[i].price);
             let itemObj = {
                 id: data[i].item_id,
                 product: data[i].product_name,
@@ -28,6 +29,16 @@ function displayItems() {
             };
             itemInfo.push (itemObj);
         }
+        var t = new table;
+    
+        itemInfo.forEach(function(product) {
+            t.cell('item_id', product.id)
+            t.cell('product_name', product.product)
+            t.cell('price', product.price, table.number(2))
+            t.newRow()
+        });
+        console.log(t.toString());
+
         customerChoice(itemInfo);
     })
     // connection.end();
