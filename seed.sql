@@ -9,3 +9,10 @@ VALUES ("Laptop", "Electronics", 700,  4),
 ("Monitor", "Electronics", 198, 3),
 ("Shirt", "Clothing", 24, 7),
 ("Dog Food", "Pets", 19, 6);
+
+INSERT INTO departments (department_name, over_head_costs)
+VALUES ("Electronics", 38000),
+("Clothing", 47000),
+("Furniture", 83000),
+("Toys & Games", 23000),
+("Pets", 18000);
