@@ -39,14 +39,13 @@ function mainMenu() {
 
 function salesByDepartment() {
     let query = "SELECT departments.department_id, departments.department_name, SUM(products.product_sales) AS product_sales,";
-        query += "departments.over_head_costs, (departments.over_head_costs - SUM(products.product_sales)) AS total_profit ";
+        query += "departments.over_head_costs, (SUM(products.product_sales) - departments.over_head_costs) AS total_profit ";
         query += "FROM departments INNER JOIN products ON departments.department_name = products.department_name "; 
         query += "GROUP BY departments.department_name;";
 
     connection.query(query, function(error, data) {
        displayTable(data);
-        
-        connection.end();
+        returnPrompt();
     })
 };
 
@@ -64,16 +63,36 @@ function newDepartment() {
         }
     ]).then(function(answer) {
         // console.log(answer);
-        connection.query("INSERT INTO departmets SET ?", 
+        connection.query("INSERT INTO departments SET ?", 
         {
             department_name: answer.name, 
             over_head_costs: answer.cost
         },
         function(error) {
             if(!error) {
-                console.log("New Department Has Been Added!")
-                connection.query("SELECT * FROM departments", function(){
-                    connection.end();
+                console.log("\r\nNew Department Has Been Added!\r\n")
+                connection.query("SELECT * FROM departments", function(error, data){
+                    let deptArray = [];
+                    for(let i = 0; i < data.length; i++) {
+                        let obj= {
+                            id: data[i].department_id,
+                            name: data[i].department_name,
+                            cost: data[i].over_head_costs
+                        };
+                        deptArray.push(obj);
+                    }
+                    
+                    var t = new table
+ 
+                    deptArray.forEach(function(product) {
+                    t.cell('department_id', product.id)
+                    t.cell('department_name', product.name)
+                    t.cell('over_head_costs', product.cost)
+                    t.newRow()
+                    })
+                    
+                    console.log(t.toString())
+                    returnPrompt();
                 })
             }
         })  
@@ -93,4 +112,22 @@ function displayTable(dataInfo) {
     })
     
     console.log(t.toString())
+};
+
+function returnPrompt() {
+    inquirer.prompt([
+        {
+            type: "confirm",
+            name: "choice",
+            message: "Return to Main Menu? "
+        }
+    ]).then(function(answer) {
+        if(answer.choice) {
+            mainMenu();
+        }
+        else{
+            connection.end();
+        }
+    })
 }
+

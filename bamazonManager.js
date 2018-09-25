@@ -76,9 +76,26 @@ function viewProducts() {
 
 function viewLowInventory() {
     connection.query("SELECT * FROM products WHERE stock_quantity < 5", function(error, data) {
+        let itemArray = []
         for (let i = 0; i < data.length; i++) {
-            console.log(data[i].item_id + " " + data[i].product_name + " " + data[i].stock_quantity);
+            // console.log(data[i].item_id + " " + data[i].product_name + " " + data[i].stock_quantity);
+            let obj = {
+                id: data[i].item_id,
+                name: data[i].product_name,
+                qty: data[i].stock_quantity
+            }
+            itemArray.push(obj);
         }
+        var t = new table;
+    
+        itemArray.forEach(function(product) {
+            t.cell('Item Id', product.id)
+            t.cell('Product Name', product.name)
+            t.cell('Product QTY', product.qty)
+            t.newRow()
+        });
+        console.log(t.toString());
+
         returnPrompt();
     })
     
@@ -107,7 +124,9 @@ function addInventory() {
             let itemID = answer.itemChoice.split(" ")[0];
             connection.query("UPDATE products SET stock_quantity = stock_quantity + ? WHERE item_id = ?", [answer.quantity, itemID], function() {
                 connection.query("SELECT * FROM products WHERE item_id = ?", itemID, function(error, data) {
-                    console.log(data[0].item_id + " " + data[0].product_name + " UPDATED STOCK QTY: " + data[0].stock_quantity);
+                    console.log(" Item ID: " + data[0].item_id + "\r\n " + 
+                                "Product: " + data[0].product_name + 
+                                "\r\n UPDATED STOCK QTY: " + data[0].stock_quantity);
                     returnPrompt();
                 }) 
             })

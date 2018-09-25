@@ -72,7 +72,8 @@ function customerChoice(items) {
 }
 
 function buyItem(items, quantity, id) {
-    connection.query("UPDATE products SET stock_quantity = stock_quantity - ?, product_sales = ? WHERE item_id = ?", [quantity, (quantity * items[id-1].price), id], function() {
+    connection.query("UPDATE products SET stock_quantity = stock_quantity - ?, product_sales = product_sales + ? WHERE item_id = ?", 
+    [quantity, (quantity * items[id-1].price), id], function() {
         console.log("\r\nYou purchased " + quantity + " " + items[id-1].product +
                     "\r\nYour total is $" + quantity * items[id-1].price +
                     "\r\nThank you for your purchase.");
