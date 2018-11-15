@@ -5,7 +5,7 @@
 * To start the page will display all the items available with their corresponding ID, name, and price for each of them.
 * The user will be prompted to input the ID # of the item they would like to purchase. 
 * Then the user will be asked for the quantity of the item they would like to purchase.
-* If the quantity requested is greater the amount currently available, the program will show a message letting the user know of insufficient quantity. And asked the user again to enter the item id and quantity.
+* If the quantity requested is greater than the amount currently available, the program will show a message letting the user know of insufficient quantity. And asked the user again to enter the item id and quantity.
 * If the quantity requested is within the current amount, the purchase will be completed, by notifying the user of the item bought as well as the total price of the item.
 
 * video demo link: https://drive.google.com/file/d/1MV_NMSYVbnJ0xZBmQ5P_sL98JKmJS6Yz/view
